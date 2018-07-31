@@ -23,6 +23,11 @@ function NUHeaderFooter(){
 
   // this is the main method to start building content and adding it to the DOM
   this.buildContent = function(){
+
+
+    // load the CSS right away to make the page look better right away
+    this.loadResource("/css/headerfooter.css", "css", "head");
+
     var m = Object.keys(_this.targets).length;
     var i = 0;
     for(var x in _this.targets){
@@ -81,34 +86,31 @@ function NUHeaderFooter(){
 
   // this method will add any extra css or scripts to the page that we need
   this.setExtras = function(){
-    var base = 'https://www.northeastern.edu/nuglobalutils/common';
-    this.loadResource(base+"/css/headerfooter.css", "css", "head");
-    this.loadResource(base+"/js/navigation-min.js", "js" , "html");
-
-    delete base;
+    this.loadResource("/js/navigation-min.js", "js" , "html");
   }
 
 
   // this method will load external resources for js, styles, etc.
 	this.loadResource = function(a,b,c){
+    var baseAdd = '/nuglobalutils/common';
 		var fileRef = null;
 		switch(b){
 	    case 'js':
 				fileRef=document.createElement('script');
 				fileRef.setAttribute("type","text/javascript");
-				fileRef.setAttribute("src",a);
+				fileRef.setAttribute("src",_this.base+baseAdd+a);
 	      break;
 	    case 'css':
 				fileRef=document.createElement("link")
         fileRef.setAttribute("rel","stylesheet")
         fileRef.setAttribute("type","text/css")
-        fileRef.setAttribute("href",a)
+        fileRef.setAttribute("href",_this.base+baseAdd+a)
 	      break;
 	    default:
 	        break;
 		}
 		document.getElementsByTagName(c)[0].appendChild(fileRef);
-		delete fileRef,a,b,c;
+		delete baseAdd,fileRef,a,b,c;
 	}
 
 }
