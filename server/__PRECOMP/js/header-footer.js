@@ -1,155 +1,122 @@
-//adds the header tag to the document with the id of globalheader
-function addHeader(){
-  var elemDiv = document.createElement('div');
-  elemDiv.setAttribute('id','nu__globalheader')
-  document.body.appendChild(elemDiv);
-}
+/* ***********************************************************************
 
-function loadXMLDocHeader() {
+NU Header and Footer (NUHF)
 
-    var xmlhttp = new XMLHttpRequest();
-    //var url = 'http://newnu.edu/resources/components/?return=main-menu'; //local development
-    var url = 'https://www.northeastern.edu/resources/components/?return=main-menu';
-    xmlhttp.onreadystatechange = function () {
-        if (xmlhttp.readyState == XMLHttpRequest.DONE) {
-            if (xmlhttp.status == 200) {
-              addHeader();
-                document.getElementById("nu__globalheader").innerHTML = xmlhttp.responseText;
-                nuscripts();
-            } else if (xmlhttp.status == 400) {
-                console.log('There was an error 400');
-            } else {
-                console.log('something else other than 200 was returned');
+*********************************************************************** */
+
+
+function NUHeaderFooter(){
+
+  var _this = this;
+
+  _this.base = 'https://www.northeastern.edu';
+
+  _this.targets = {
+    header:{
+      id:'nu__globalheader'
+      ,source:'/resources/components/?return=main-menu&cache=no'}
+    ,footer:{
+      id:"nu__global-footer"
+      ,source:'/resources/includes/?r=footer&cache=no'}
+  }
+
+
+  // this is the main method to start building content and adding it to the DOM
+  this.buildContent = function(){
+    var m = Object.keys(_this.targets).length;
+    var i = 0;
+    for(var x in _this.targets){
+      if(_this.addElement(_this.targets[x]['id'])){ // add the new elem to the DOM, and return true to proceed
+        if(_this.loadData(_this.targets[x],(i + 1) === m)?true:false){
+          // success handle
+          delete m,i;
+        }else{
+          // error handle
+        }
+      }else{
+        // error handle
+      }
+      i++;
+    }
+  }
+
+  // this method will inject new div elements into the DOM to allow us to pipont delivery of content
+  this.addElement = function(a){
+    var e = document.createElement('div');
+    e.setAttribute('id',a);
+    document.body.appendChild(e);
+
+    delete a,e;
+
+    return true;  // return true to let the calling script know to proceed
+  }
+
+
+  // this method will grab the remote cotent and load it into the correct element
+  this.loadData = function(a,b){
+
+    var req = new XMLHttpRequest();
+
+    var url = _this.base+a['source'];
+    req.onreadystatechange = function(){
+        if (req.readyState == XMLHttpRequest.DONE){
+            if (req.status == 200) {
+                document.getElementById(a['id']).innerHTML = req.responseText;
+                if(b == true){  // this is the last item to load, set the extras!
+                  setTimeout(function(){ _this.setExtras();},1000);  // there must be a more accurate way to time this!!!!!!!
+                }
+            } else if (req.status == 400) {
+              alert('ERROR: the remote content could not be loaded');
+              return false;
             }
         }
     };
 
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
-};
+    req.open("GET",url,true);
+    req.send();
 
-loadXMLDocHeader();
-
-
-//alert('afs');
-
-  function loadjscssfile(filename, filetype, pos){
-    var fileref;
-      if (filetype=="js"){ //if filename is a external JavaScript file
-        var fileref=document.createElement('script')
-        fileref.setAttribute("type","text/javascript")
-        fileref.setAttribute("src", filename)
-      }
-      else if (filetype=="css"){ //if filename is an external CSS file
-        var fileref=document.createElement("link")
-        fileref.setAttribute("rel", "stylesheet")
-        fileref.setAttribute("type", "text/css")
-        fileref.setAttribute("href", filename)
-        //fileref.async = false;
-        //fileref.setAttribute("async", true)
-      }
-      else if (filetype=="text"){ //if filename is an external CSS file
-        var fileref=document.createElement('script')
-        fileref.setAttribute("type","text/javascript")
-        fileref.textContent = filename
-      }
-      if (typeof fileref !="undefined"){
-        //document.getElementsByTagName("head")[0].appendChild(fileref)
-        // if(filetype == "js"){
-          // document.getElementsByTagName(pos)[0].prependChild(fileref);
-        // }else{
-          document.getElementsByTagName(pos)[0].appendChild(fileref);
-        // }
-      }
+    delete a,b,req,url;
+  };
 
 
+  // this method will add any extra css or scripts to the page that we need
+  this.setExtras = function(){
+    var base = 'https://www.northeastern.edu/nuglobalutils/common';
+    this.loadResource(base+"/css/headerfooter.css", "css", "head");
+    this.loadResource(base+"/js/navigation-min.js", "js" , "html");
+
+    delete base;
   }
 
-  function nuscripts(){
 
-   loadjscssfile("https://www.northeastern.edu/nuglobalutils/common/css/headerfooter.css", "css", "head") ////dynamically load and add this .css file
-   loadjscssfile("https://www.northeastern.edu/nuglobalutils/common/js/navigation-min.js", "js" , "html") ////dynamically load and add this .css file
-}
-
-
-
-
-
-
-
-
-//FOOOTER
-
-
-//adds the header tag to the document with the id of globalheader
-function addFooter(){
-  var elemDiv = document.createElement('div');
-  elemDiv.setAttribute('id','nu__global-footer')
-  document.body.appendChild(elemDiv);
-}
-
-function loadXMLDocFooter() {
-
-    var xmlhttp = new XMLHttpRequest();
-
-    var url = 'https://www.northeastern.edu/resources/includes/?r=footer';
-    xmlhttp.onreadystatechange = function () {
-        if (xmlhttp.readyState == XMLHttpRequest.DONE) {
-            if (xmlhttp.status == 200) {
-              addFooter();
-                document.getElementById("nu__global-footer").innerHTML = xmlhttp.responseText;
-                nuFooterScripts();
-            } else if (xmlhttp.status == 400) {
-                console.log('There was an error 400');
-            } else {
-                console.log('something else other than 200 was returned');
-            }
-        }
-    };
-
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
-};
-
-loadXMLDocFooter();
-
-
-
-
-  function loadjscssfile(filename, filetype, pos){
-    var fileref;
-      if (filetype=="js"){ //if filename is a external JavaScript file
-        var fileref=document.createElement('script')
-        fileref.setAttribute("type","text/javascript")
-        fileref.setAttribute("src", filename)
-      }
-      else if (filetype=="css"){ //if filename is an external CSS file
-        var fileref=document.createElement("link")
-        fileref.setAttribute("rel", "stylesheet")
-        fileref.setAttribute("type", "text/css")
-        fileref.setAttribute("href", filename)
-        //fileref.async = false;
-        //fileref.setAttribute("async", true)
-      }
-      else if (filetype=="text"){ //if filename is an external CSS file
-        var fileref=document.createElement('script')
-        fileref.setAttribute("type","text/javascript")
-        fileref.textContent = filename
-      }
-      if (typeof fileref !="undefined"){
-        //document.getElementsByTagName("head")[0].appendChild(fileref)
-        // if(filetype == "js"){
-          // document.getElementsByTagName(pos)[0].prependChild(fileref);
-        // }else{
-          document.getElementsByTagName(pos)[0].appendChild(fileref);
-        // }
-      }
-
-
-  }
-
-  function nuFooterScripts(){
-
-   //loadjscssfile("http://dynamicnav.nudev.net/global/common/css/footer.css", "css", "head") ////dynamically load and add this .css file
+  // this method will load external resources for js, styles, etc.
+	this.loadResource = function(a,b,c){
+		var fileRef = null;
+		switch(b){
+	    case 'js':
+				fileRef=document.createElement('script');
+				fileRef.setAttribute("type","text/javascript");
+				fileRef.setAttribute("src",a);
+	      break;
+	    case 'css':
+				fileRef=document.createElement("link")
+        fileRef.setAttribute("rel","stylesheet")
+        fileRef.setAttribute("type","text/css")
+        fileRef.setAttribute("href",a)
+	      break;
+	    default:
+	        break;
+		}
+		document.getElementsByTagName(c)[0].appendChild(fileRef);
+		delete fileRef,a,b,c;
+	}
 
 }
+
+
+
+
+
+// instantiate a new global header footer object
+var NUHF = new NUHeaderFooter();
+NUHF.buildContent();  // call to build out the content to be added to the page
