@@ -9,15 +9,20 @@ function NUHeaderFooter(){
 
   var _this = this;
 
-  _this.base = 'https://www.northeastern.edu';
+  _this.URLBase = {
+    service:'https://www.northeastern.edu'
+    ,brand:'https://www.northeastern.edu'
+  };
 
   _this.targets = {
     header:{
       id:'nu__globalheader'
-      ,source:'/resources/components/?return=main-menu&cache=no'}
+      ,source:'/resources/components/?return=main-menu&cache=no'
+    }
     ,footer:{
       id:"nu__global-footer"
-      ,source:'/resources/includes/?r=footer&cache=no'}
+      ,source:'/resources/includes/?r=footer&cache=no'
+    }
   }
 
 
@@ -26,7 +31,7 @@ function NUHeaderFooter(){
 
 
     // load the CSS right away to make the page look better right away
-    this.loadResource("/css/headerfooter.css", "css", "head");
+    this.loadResource(_this.URLBase['brand']+"/nuglobalutils/common/css/headerfooter.css", "css", "head");
 
     var m = Object.keys(_this.targets).length;
     var i = 0;
@@ -43,6 +48,7 @@ function NUHeaderFooter(){
       }
       i++;
     }
+    delete m,i,x;
   }
 
   // this method will inject new div elements into the DOM to allow us to pipont delivery of content
@@ -62,7 +68,7 @@ function NUHeaderFooter(){
 
     var req = new XMLHttpRequest();
 
-    var url = _this.base+a['source'];
+    var url = _this.URLBase['service']+a['source'];
     req.onreadystatechange = function(){
         if (req.readyState == XMLHttpRequest.DONE){
             if (req.status == 200) {
@@ -86,31 +92,30 @@ function NUHeaderFooter(){
 
   // this method will add any extra css or scripts to the page that we need
   this.setExtras = function(){
-    this.loadResource("/js/navigation-min.js", "js" , "html");
+    this.loadResource(_this.URLBase['service']+"/nuglobalutils/common/js/navigation.js", "js" , "html");
   }
 
 
   // this method will load external resources for js, styles, etc.
 	this.loadResource = function(a,b,c){
-    var baseAdd = '/nuglobalutils/common';
 		var fileRef = null;
 		switch(b){
 	    case 'js':
 				fileRef=document.createElement('script');
 				fileRef.setAttribute("type","text/javascript");
-				fileRef.setAttribute("src",_this.base+baseAdd+a);
+				fileRef.setAttribute("src",a);
 	      break;
 	    case 'css':
 				fileRef=document.createElement("link")
         fileRef.setAttribute("rel","stylesheet")
         fileRef.setAttribute("type","text/css")
-        fileRef.setAttribute("href",_this.base+baseAdd+a)
+        fileRef.setAttribute("href",a)
 	      break;
 	    default:
 	        break;
 		}
 		document.getElementsByTagName(c)[0].appendChild(fileRef);
-		delete baseAdd,fileRef,a,b,c;
+		delete fileRef,a,b,c;
 	}
 
 }
