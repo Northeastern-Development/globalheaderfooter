@@ -11,6 +11,20 @@ function NUGlobalNav(){
   this.trigger = document.getElementById("nu__supernav-toggle");  // this is our main nav trigger element
   this.category = document.querySelector("div.items > ul"); // these are the main category options within the nav
 
+
+  // check and see if the alerts are open so that we can adjust the height of the utility nav area and possibly the sites header
+  if(document.getElementById("nu__alerts") !== null){
+    var h = document.getElementById('nu__globalheader').clientHeight; // height of global header
+    var h2 = document.getElementsByTagName('header')[0].clientHeight; // height of sites header
+    document.getElementsByTagName('header')[0].style.top = h+'px';
+    document.getElementsByTagName('main')[0].style.margin = (h + h2)+'px 0 0 0';
+
+    document.getElementById('nu__supernav').style.margin = h+'px 0 0 0';
+
+    delete(h,h2);
+  }
+
+
   // this will be triggered when the menu is actioned by the user, either to open or close it
   this.trigger.onclick = function(e){
 
