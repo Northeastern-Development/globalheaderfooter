@@ -12,6 +12,7 @@
    margin:0;
    padding:0;
  }
+ 
 
 // the main footer element on every page
 // flows after content on all pages other than the homepage
@@ -19,10 +20,10 @@ div#nu__global-footer{
   flex: none;
   background-color: rgba($brand_colors-black,1.0);
   overflow: hidden;
-  width: 100vw;
+  width: 100%;
   height: auto;
   padding: 0 0 0 0;
-  border-top: solid rgba($brand_colors-grayW,1.0) 1px;
+  // border-top: solid rgba($brand_colors-grayW,1.0) 1px;
   & a{
     border-bottom: none;
     text-decoration: none;
@@ -30,7 +31,7 @@ div#nu__global-footer{
 
   & > div.nu__footer{
    padding: 0 0 20px 0;
-   width: 100vw;
+   width: 100%;
    height: inherit;
    margin: 0 auto 0 auto;
     position: relative;
